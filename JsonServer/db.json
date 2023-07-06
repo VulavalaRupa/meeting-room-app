@@ -54,7 +54,7 @@
     {
       "id": 1,
       "title": "Small Conference Room",
-      "capacity": 20,
+      "capacity": "20",
       "status": "Confirmed",
       "total": "$450",
       "date": "2023-07-05",
@@ -78,7 +78,7 @@
     {
       "id": 2,
       "title": "Large Conference Room",
-      "capacity": 20,
+      "capacity": "20",
       "status": "Pending",
       "total": "$545.20",
       "date": "2023-07-05",
@@ -102,7 +102,7 @@
     {
       "id": 3,
       "title": "Small Conference Room",
-      "capacity": 20,
+      "capacity": "20",
       "status": "Cancelled",
       "total": "$450",
       "date": "2023-07-22",
@@ -126,7 +126,7 @@
     {
       "id": 4,
       "title": "Panoramic Conference Room",
-      "capacity": 20,
+      "capacity": "20",
       "status": "Confirmed",
       "total": "$380",
       "date": "2023-07-13",
@@ -153,7 +153,8 @@
       "id":1,
       "roomName":"Small Conference Room",
       "capacity": "12 People",
-      "price":"69.00 per hour, 250 half day",
+      "price":["69.00 per hour", "250 half day"],
+      "image":"/assets/images/small.jpg",
       "description":[
         "This workspace gives business and mobile travellers privacy to work undistrubed",
       " Confortable, Private workspace",
@@ -163,16 +164,14 @@
        "Print of a forgotten document",
        "Make a call in peace and quite",
       "Power station to recharge laptop",
-      "For wheelchair users, alternate facilities available."],
-      "date":"2023-07-05",
-      "duration":"Hour",
-      "attendees":"10"
+      "For wheelchair users, alternate facilities available."]
     },
     {
       "id":2,
       "roomName":"Large Conference Room",
       "capacity": "40 People",
-      "price":"200.00 per hour, 1000 per day",
+      "price":["200.00 per hour", "1000 per day"],
+      "image":"/assets/images/large.jpg",
       "description":[
         "This workspace gives business and mobile travellers privacy to work undistrubed",
       " Confortable, Private workspace",
@@ -182,26 +181,22 @@
        "Print of a forgotten document",
        "Make a call in peace and quite",
       "Power station to recharge laptop",
-      "For wheelchair users, alternate facilities available."],
-      "date":"2023-07-05",
-      "duration":"Half day",
-      "attendees":"30"
+      "For wheelchair users, alternate facilities available."]
     },
     {
       "id":3,
       "roomName":"Panoramic  Room",
       "capacity": "20 People",
-      "price":"160.00 per hour, 850 per day",
+      "price":["160.00 per hour",
+       "850 per day"],
+      "image":"/assets/images/panoramic.jpg",
       "description": [
         "Situated in an instantly recognized address. a short walk from Westminstethese service offices are imposing. Accessable from Charing Cross Station, they are perfect for business needing access. Break out areas  to brainstrom ideas. Major transport links making it perfect if you travel.",
         "Width: 7.85mm",
         "Length: 6.9m",
         "Height: 3.25m",
         "Total floor space: 76m"
-      ],
-      "date":"2023-07-10",
-      "duration":"Multiple days",
-      "attendees":"20"
+      ]
     }
   ]
 }

@@ -5,7 +5,7 @@ const RoomBookingRoutes = () => {
 
     return(
         <Routes>
-            <Route path="/bookroom" element={<BookRoom/>}></Route>
+            <Route path="/bookroom/:id" element={<BookRoom/>}></Route>
         </Routes>
 
     );

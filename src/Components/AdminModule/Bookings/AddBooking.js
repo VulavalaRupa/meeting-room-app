@@ -41,7 +41,7 @@ const AddBooking = () => {
         const newBooking = {
             title,
             date,
-            capacity: parseInt(capacity),
+            capacity,
             total,
             bookfor,
             priceperday,

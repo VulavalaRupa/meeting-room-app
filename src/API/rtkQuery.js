@@ -85,14 +85,7 @@ export const meetingRoomApi = createApi({
         }),
         getroombookings: builder.query ({
             query:() => "/userBookings"
-        }),
-        userbookings : builder.mutation({
-            query: (roombooking) => ({
-                url: `/userBookings`,
-                method: 'POST',
-                body: roombooking
-            })
-        }),
+        })
     })
 })
 
@@ -100,4 +93,4 @@ export const { useLoginQuery, useSignupMutation, useRoomsQuery,
     useAddroomsMutation, useEditroomMutation, useDeleteRoomMutation,
     useBookingsQuery, useAddbookingMutation, useEditbookingMutation, useDeleteBookingMutation,
     useGetusersQuery, useAddusersMutation, useEdituserMutation, useDeleteUserMutation,
-    useGetroombookingsQuery, useUserbookingsMutation} = meetingRoomApi;
+    useGetroombookingsQuery} = meetingRoomApi;
