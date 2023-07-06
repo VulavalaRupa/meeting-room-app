@@ -29,7 +29,7 @@ const LoginForm = () => {
             }
             else if(user.role === 'user'){
                 setSuccessMessage("Login success!");
-                navigate('/user-dashboard')
+                navigate('/user-dashboard', {state:{user}})
             }
         }
         if (error) {
