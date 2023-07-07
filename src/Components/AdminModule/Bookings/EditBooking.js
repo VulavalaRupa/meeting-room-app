@@ -112,9 +112,7 @@ const EditBooking = () => {
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={bookfor} onChange={(e) => setBookFor(e.target.value)}>
                                             <option value="">Select Option</option>
-                                            <option value="Multipledays">Multipledays</option>
-                                            <option value="Halfday">Halfday</option>
-                                            <option value="Hour">Hour</option>
+                                            <option value={bookfor}>{bookfor}</option>
                                         </select>
 
                                     </div>

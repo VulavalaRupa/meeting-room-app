@@ -28,6 +28,7 @@ const BookRoom = () => {
     const [addbooking, error, isLoading] = useAddbookingMutation()
     const [step, setStep] = useState(1);
     const [successMessage, setSuccessMessage] = useState("");
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
 
     useEffect(() => {
         let timer;
@@ -43,13 +44,13 @@ const BookRoom = () => {
     const handleAddBooking = (e) => {
         e.preventDefault();
         const newBooking = {
-            title : booking.roomName,
+            title: booking.roomName,
             date,
             capacity: booking.capacity,
             total: priceperday,
-            bookfor,
+            bookfor: `${bookfor} - ${selectedTimeSlot}`,
             priceperday,
-            status : "Active",
+            status: "Active",
             users: [{ name, phone, email, address, company, city, state, country, zip }]
 
         };
@@ -63,6 +64,58 @@ const BookRoom = () => {
         if (step === 1) {
             setStep(2);
         }
+    };
+
+    const handleDurationSelect = (e) => {
+        const selectedDuration = e.target.value;
+        setBookFor(selectedDuration);
+        setSelectedTimeSlot('');
+
+        const slots = generateTimeSlots(selectedDuration, date);
+        setTimeSlots(slots);
+    };
+
+    const generateTimeSlots = (duration, date) => {
+        const timeSlots = [];
+        const today = new Date();
+        date = today.toISOString().split('T')[0];
+
+        if (duration === 'Multipledays') {
+            const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const startDate = new Date(date);
+            const numberOfDays = 7;
+
+            for (let i = 0; i < numberOfDays; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                const weekday = weekdays[currentDate.getDay()];
+                timeSlots.push(weekday);
+            }
+        } else if (duration === 'Halfday') {
+            const halfDayTimeRanges = [
+                { label: 'Morning', startTime: '8:00', endTime: '12:00' },
+                { label: 'Afternoon', startTime: '13:00', endTime: '15:00' },
+                { label: 'Evening', startTime: '16:00', endTime: '18:00' }
+            ];
+
+            halfDayTimeRanges.forEach((timeRange) => {
+                const slot = `${timeRange.label}: ${timeRange.startTime}-${timeRange.endTime}`;
+                timeSlots.push(slot);
+            });
+        } else if (duration === 'Hour') {
+            const startTime = 9;
+            const endTime = 15;
+            const slotDuration = 1;
+
+            for (let i = startTime; i <= endTime; i += slotDuration) {
+                const startTime = i.toFixed(2);
+                const endTime = (i + slotDuration).toFixed(2);
+                const timeSlot = `${startTime}-${endTime}`;
+                timeSlots.push(timeSlot);
+            }
+        }
+
+        return timeSlots;
     };
 
     return (
@@ -104,24 +157,41 @@ const BookRoom = () => {
                                     <label className="fs-5">Duration</label>
                                 </div>
                                 <div className="col-10  mb-4">
-                                    <select className="form-control form-control-lg" value={bookfor} onChange={(e) => setBookFor(e.target.value)} required>
+                                    <select className="form-control form-control-lg" value={bookfor} onChange={handleDurationSelect}>
                                         <option value="">Select Duration</option>
                                         <option value="Hour">Hour</option>
-                                        <option value="Half day">Half day</option>
-                                        <option value="Multiple days">Multiple days</option>
+                                        <option value="Halfday">Halfday</option>
+                                        <option value="Multipledays">Multipledays</option>
                                     </select>
                                 </div>
+                                {bookfor && (
+                                    <>
+                                        <div className="col-2 mb-4">
+                                            <label className="fs-5">Time Slot</label>
+                                        </div>
+                                        <div className="col-10 mb-4">
+                                            {timeSlots?.map((slot) => (
+                                                <button key={slot}
+                                                    value={slot} onClick={() => setSelectedTimeSlot(slot)} className={`ms-3 me-3 mt-3 btn btn-light  p-3 time-slot ${selectedTimeSlot === slot ? 'selected' : ''}`}>
+                                                    {slot}
+
+                                                </button>
+
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
                                 <div className="col-2 mb-4">
                                     <label className="fs-5">Price</label>
                                 </div>
                                 <div className="col-10  mb-4">
-                                    <select className="form-control form-control-lg" value={priceperday} onChange={(e)=> setPricePerDay(e.target.value)} required>
-                                    <option value="">Select Price</option>
-                                    {booking?.price?.map((data) => (
-                                        <>
-                                        <option value={data}>{data}</option>
-                                        </>
-                                    ))}
+                                    <select className="form-control form-control-lg" value={priceperday} onChange={(e) => setPricePerDay(e.target.value)} required>
+                                        <option value="">Select Price</option>
+                                        {booking?.price?.map((data) => (
+                                            <>
+                                                <option value={data}>{data}</option>
+                                            </>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="col-2 mb-4">
