@@ -29,7 +29,7 @@ const Sidebar = () => {
                     </li>
                 </ul>
              
-                <div class="pb-4">
+                <div className="pb-4">
                     <Link to="/" className="d-flex align-items-center  px-0 text-white text-decoration-none fs-5">
                     <i className="fa fa-sign-out"></i> <span className="ms-3 d-none d-sm-inline">Logout</span>
                     </Link>

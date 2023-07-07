@@ -29,7 +29,8 @@ const LoginForm = () => {
             }
             else if(user.role === 'user'){
                 setSuccessMessage("Login success!");
-                navigate('/user-dashboard', {state:{user}})
+                localStorage.setItem("UserName", user.username)
+                navigate('/user-dashboard')
             }
         }
         if (error) {

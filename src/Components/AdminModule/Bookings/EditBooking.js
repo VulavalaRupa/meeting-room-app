@@ -24,8 +24,8 @@ const EditBooking = () => {
     const [zip, setZip] = useState(booking?.users[0]?.zip);
     const [country, setCountry] = useState(booking?.users[0]?.country);
     const [editbooking, { isLoading }] = useEditbookingMutation();
-    const [step, setStep] = useState(1);
     const [successMessage, setSuccessMessage] = useState("");
+    const [activeTab, setActiveTab] = useState('booking');
 
     useEffect(() => {
         let timer;
@@ -41,20 +41,22 @@ const EditBooking = () => {
     // Function to update the fields
     const handleEditForm = (e) => {
         e.preventDefault();
-        const updatedBooking= { ...booking, title, date, capacity, total, bookfor, priceperday, status,
-            users:[{name, phone, email,address, company, city, state, country, zip}]};
+        const updatedBooking = {
+            ...booking, title: title,
+             date, capacity, total, 
+             bookfor: bookfor, priceperday, status,
+            users: [{ name, phone, email, address, company, city, state, country, zip }]
+        };
         editbooking(updatedBooking).unwrap().then((response) => {
             setSuccessMessage("Booking updated successfully!");
             window.location.reload();
         })
     }
 
-    const handleNextClick = () => {
-        if (step === 1) {
-            setStep(2);
-        }
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
     };
-  
+
     return (
         <div className="container-fluid">
             <div className='row'>
@@ -62,21 +64,34 @@ const EditBooking = () => {
                     <Sidebar />
                 </div>
                 <div className='col-auto col-md-9 col-xl-10 '>
-                {successMessage && <div className="mt-3 alert alert-success">{successMessage}</div>}
+                    {successMessage && <div className="mt-3 alert alert-success">{successMessage}</div>}
                     <div className='fs-2 ms-3 font-weight-bold'>Edit Booking</div>
-                    <div className="card shadow rounded ms-3 p-4 mt-4">
-                            {step === 1 && (
-                                <div className="row ">
-                                    <div className='fs-4 mb-5' style={{ "font-weight": "bolder" }}>Booking Details</div>
+                    <ul className="nav nav-tabs mt-3 fs-5 ms-3">
+                        <li className="nav-item">
+                            <button className={`nav-link ${activeTab === 'booking' ? 'active' : ''}`} onClick={() => handleTabChange('booking')}>
+                                Booking Details
+                            </button>
+                        </li>
+                        <li className="nav-item">
+                            <button className={`nav-link ${activeTab === 'client' ? 'active' : ''}`} onClick={() => handleTabChange('client')}>
+                                Client Details
+                            </button>
+                        </li>
+                    </ul>
+                    <div className="tab-content">
+                        <div className="card  rounded ms-3 p-4">
+                            {activeTab === 'booking' && (
+                                <div className="row tab-pane fade show active">
+                                    <div className='fs-4 mb-5' style={{ fontWeight: "bolder" }}>Booking Details</div>
                                     <div className="col-2 mb-4">
                                         <label className="fs-5">Room</label>
                                     </div>
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={title} onChange={(e) => setTitle(e.target.value)}>
                                             <option value="">Select a Room</option>
-                                            <option value="Small Conference room">Small Conference room</option>
-                                            <option value="Large Conference room">Large Conference room</option>
-                                            <option value="Panoramic room">Panoramic room</option>
+                                            <option value="SmallConferenceRoom">SmallConferenceRoom</option>
+                                            <option value="LargeConferenceRoom">LargeConferenceRoom</option>
+                                            <option value="PanoramicRoom">PanoramicRoom</option>
                                         </select>
                                     </div>
                                     <div className="col-2 mb-4">
@@ -97,8 +112,8 @@ const EditBooking = () => {
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={bookfor} onChange={(e) => setBookFor(e.target.value)}>
                                             <option value="">Select Option</option>
-                                            <option value="Multiple Days">Multiple Days</option>
-                                            <option value="Half Day">Half Day</option>
+                                            <option value="Multipledays">Multipledays</option>
+                                            <option value="Halfday">Halfday</option>
                                             <option value="Hour">Hour</option>
                                         </select>
 
@@ -133,85 +148,71 @@ const EditBooking = () => {
                                             <input className="form-control form-control-lg" type="text" value={total} onChange={(e) => setTotal(e.target.value)} />
                                         </div>
                                     </div>
-                                    <div className="col-2 "></div>
-                            <div className="col-10 mt-3 d-grid gap-2 d-md-flex">
-                                    <button className="btn btn-primary btn-lg" onClick={handleNextClick}>Next</button>
-                                    </div>
                                 </div>
                             )}
 
 
                             {/* Client Details */}
-                            {step === 2 && (
-                                <div className="row">
-                                    <div className='fs-4 mb-5' style={{ "font-weight": "bolder" }}>Client Details</div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Name</label>
+                            {activeTab === 'client' && (
+                                <div className="tab-pane fade show active">
+                                    <div className="row ">
+                                        <div className='fs-4 mb-5' style={{ fontWeight: "bolder" }}>Client Details</div>
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Name</label>
+                                            <input className="form-control form-control-lg" type="text" value={name} onChange={(e) => setName(e.target.value)}></input>
+                                        </div>
+                                        <div className="col-4 ">
+                                            <label className="fs-5 mb-3">Email</label>
+                                            <input className="form-control form-control-lg" type="text" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+                                        </div>
+
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Phone</label>
+                                            <input className="form-control form-control-lg" type="text" value={phone} onChange={(e) => setPhone(e.target.value)}></input>
+                                        </div>
                                     </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={name} onChange={(e) => setName(e.target.value)}></input>
+                                    <div className="row mt-5">
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Company</label>
+                                            <input className="form-control form-control-lg" type="text" value={company} onChange={(e) => setCompany(e.target.value)}></input>
+                                        </div>
+
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Address</label>
+                                            <input className="form-control form-control-lg" type="text" value={address} onChange={(e) => setAddress(e.target.value)}></input>
+                                        </div>
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">City</label>
+                                            <input className="form-control form-control-lg" type="text" value={city} onChange={(e) => setCity(e.target.value)}></input>
+                                        </div>
+                                        </div>
+                                        <div className="row mt-5">
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">State</label>
+                                            <input className="form-control form-control-lg" type="text" value={state} onChange={(e) => setState(e.target.value)}></input>
+                                        </div>
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Zip</label>
+                                            <input className="form-control form-control-lg" type="text" value={zip} onChange={(e) => setZip(e.target.value)}></input>
+                                        </div>
+                                        <div className="col-4">
+                                            <label className="fs-5 mb-3">Country</label>
+                                            <input className="form-control form-control-lg" type="text" value={country} onChange={(e) => setCountry(e.target.value)}></input>
+                                        </div>
+                                       
+                                        <div className="col-2 "></div>
+                                        <div className="col-10 mt-5 d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <button type="button" className="btn btn-primary btn-lg" onClick={handleEditForm}>Update</button>
+                                            <button type="button" className="btn btn-dark btn-lg" onClick={() => navigate("/bookings")}>Cancel</button>
+                                        </div>
                                     </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Email</label>
-                                    </div>
-                                    <div className="col-10  mb-4">
-                                        <input className="form-control form-control-lg" type="text" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Phone</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                        <input className="form-control form-control-lg" type="text" value={phone} onChange={(e) => setPhone(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Company</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={company} onChange={(e) => setCompany(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Address</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={address} onChange={(e) => setAddress(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">City</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={city} onChange={(e) => setCity(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">State</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={state} onChange={(e) => setState(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Zip</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={zip} onChange={(e) => setZip(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 mb-4">
-                                        <label className="fs-5">Country</label>
-                                    </div>
-                                    <div className="col-10 mb-4">
-                                    <input className="form-control form-control-lg" type="text" value={country} onChange={(e) => setCountry(e.target.value)}></input>
-                                    </div>
-                                    <div className="col-2 "></div>
-                            <div className="col-10 mt-3 d-grid gap-2 d-md-flex">
-                            <button type="button"  className="btn btn-primary btn-lg" onClick={handleEditForm}>Update</button>
-                            <button type="button"  className="btn btn-dark btn-lg" onClick={()=>navigate("/bookings")}>Cancel</button>
-                            </div>
                                 </div>
                             )}
-
-                           
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     )
 }
 

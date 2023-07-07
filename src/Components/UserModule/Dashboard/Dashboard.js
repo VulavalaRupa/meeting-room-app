@@ -5,22 +5,26 @@ import { Link } from "react-router-dom";
 
 const Userdashboard = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const {user} = location.state;
     const { data, error } = useGetroombookingsQuery();
+    const userName = localStorage.getItem("UserName")
 
     const navigateToAddBookingRoom = (booking) => {
         navigate(`/book/bookroom/${booking.id}`, { state: { booking } })
+    }
+
+    const handleLogout = () => {
+        navigate("/")
+        localStorage.clear();
     }
 
     return (
         <div className='container-fluid p-0'>
             <div className="header">
                 <p className="fs-2 mb-0 fw-bold">Meeting rooms</p>
-                <p className="fs-4 mb-0 fw-bold" style={{marginLeft:"50rem"}}>Welcome, {user.username}</p>
-                <Link to="/" className="d-flex align-items-center  px-0 text-dark text-decoration-none fs-5 fw-bold">
+                <p className="fs-4 mb-0 fw-bold" style={{marginLeft:"50rem"}}>Welcome, {userName}</p>
+                <div onClick={handleLogout} className="d-flex align-items-center  px-0 text-dark text-decoration-none fs-5 fw-bold">
                     <i className="fa fa-sign-out"></i> <span className="ms-3 d-none d-sm-inline">Logout</span>
-                    </Link>
+                    </div>
             </div>
             {data?.map((room) => (
                 <div className="card m-5 p-4" key={room.id}>

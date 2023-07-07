@@ -86,21 +86,21 @@ const EditRoom = () => {
                             <input
                                 type="checkbox"
                                 value="multipledays"
-                                checked={bookfor.includes("multipledays")}
+                                checked={bookfor.includes("Multipledays")}
                                 onChange={handleCheckboxChange}
                             />
                             <label className="ms-2 fs-5">Multiple-days</label>
                             <input className="ms-4"
                                 type="checkbox"
                                 value="halfday"
-                                checked={bookfor.includes("halfday")}
+                                checked={bookfor.includes("Halfday")}
                                 onChange={handleCheckboxChange}
                             />
                             <label className="ms-2 fs-5">Half-day</label>
                             <input className="ms-4"
                                 type="checkbox"
                                 value="hour"
-                                checked={bookfor.includes("hour")}
+                                checked={bookfor.includes("Hour")}
                                 onChange={handleCheckboxChange}
                             />
                             <label className="ms-2 fs-5">Hour</label>

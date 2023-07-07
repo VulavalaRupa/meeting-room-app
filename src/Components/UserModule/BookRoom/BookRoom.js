@@ -144,7 +144,7 @@ const BookRoom = () => {
                 {step === 2 && (
                     <>
                         <div className="row">
-                            <div className='fs-4 mb-5' style={{ "font-weight": "bolder" }}>Personal Details</div>
+                            <div className='fs-4 mb-5' style={{ fontWeight: "bolder" }}>Personal Details</div>
                             <div className="col-4">
                                 <label className="fs-5 mb-3">Name</label>
                                 <input className="form-control form-control-lg" type="text" value={name} onChange={(e) => setName(e.target.value)}></input>
@@ -160,7 +160,7 @@ const BookRoom = () => {
                             </div>
                         </div>
                         <div className="row mt-5">
-                            <div className='fs-4 mb-5' style={{ "font-weight": "bolder" }}>Billing Address</div>
+                            <div className='fs-4 mb-5' style={{ fontWeight: "bolder" }}>Billing Address</div>
                             <div className="col-4">
                                 <label className="fs-5 mb-3">Company</label>
                                 <input className="form-control form-control-lg mb-3" type="text" value={company} onChange={(e) => setCompany(e.target.value)}></input>
