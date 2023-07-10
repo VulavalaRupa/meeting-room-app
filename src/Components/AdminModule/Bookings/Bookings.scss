@@ -2,3 +2,13 @@ button.rounded.active {
     background-color: #333; /* Set your desired active color */
     color: #fff; /* Set the text color for the active button */
   }
+
+  .confirmed{
+    color: green !important;
+  }
+  .pending{
+    color: orange !important;
+  }
+  .cancelled{
+    color: red !important;
+  }

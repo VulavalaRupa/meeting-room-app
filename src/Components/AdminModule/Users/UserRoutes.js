@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
-import AddUser from '../Rooms/AddRoom';
-import EditUser from '../Rooms/EditRoom';
+import AddUser from '../Users/AddUser';
+import EditUser from '../Users/EditUser';
 
 
 function UserRoutes() {

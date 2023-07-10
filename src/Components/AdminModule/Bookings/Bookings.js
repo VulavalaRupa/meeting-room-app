@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useBookingsQuery, useDeleteBookingMutation, useUsersQuery } from '../../../API/rtkQuery';
+import { useBookingsQuery, useDeleteBookingMutation, useRoomsQuery } from '../../../API/rtkQuery';
 import Sidebar from '../../../Common/SideBar/Sidebar';
 import { useNavigate } from 'react-router-dom';
 import "./Bookings.scss";
@@ -21,6 +21,7 @@ const Bookings = () => {
         }
         return () => clearTimeout(timer);
     }, [successMessage]);
+
 
     let filteredBookings = bookingData;
 
@@ -46,7 +47,7 @@ const Bookings = () => {
     }
 
     const handleDelete = (bookingId) => {
-        deleteBooking(bookingId).unwrap().then((res)=>{
+        deleteBooking(bookingId).unwrap().then((res) => {
             setSuccessMessage("Booking deleted successfully!");
             window.location.reload();
         })
@@ -59,7 +60,7 @@ const Bookings = () => {
                     <Sidebar />
                 </div>
                 <div className='col-auto col-md-9 col-xl-10 '>
-                {successMessage && <div className="mt-3 alert alert-danger">{successMessage}</div>}
+                    {successMessage && <div className="mt-3 alert alert-danger">{successMessage}</div>}
                     <div className='fs-2 ms-3'>List of Bookings</div>
                     <div className='d-flex flex-row p-2 mt-5'>
                         <button type="button" className='btn btn-primary' onClick={() => navigate("/bookings/addBooking")}><i className='fa fa-plus'></i>  Add Booking</button>
@@ -127,10 +128,11 @@ const Bookings = () => {
                                                 ))}
                                             </td>
                                             <td>{booking.total}</td>
-                                            <td>{booking.status}</td>
-                                            <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditBooking(booking)}></i>
-                                                <i className='fa fa-trash ms-3'  style={{"cursor":"pointer"}} onClick={() => handleDelete(booking.id)}></i>
-                                            </td>
+                                            <td className={booking.status === 'Confirmed' ? 'confirmed' : booking.status === 'Pending' ? 'pending' : booking.status === 'Cancelled' ? 'cancelled' : ''}>
+                                                {booking.status}</td>
+                                                <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditBooking(booking)}></i>
+                                                    <i className='fa fa-trash ms-3' style={{ "cursor": "pointer" }} onClick={() => handleDelete(booking.id)}></i>
+                                                </td>
                                         </tr>
                                     ))}
                                 </tbody>

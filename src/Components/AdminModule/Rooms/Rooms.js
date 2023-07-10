@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDeleteRoomMutation, useRoomsQuery } from '../../../API/rtkQuery';
+import { useDeleteRoomMutation, useRoomsQuery, useEditroomMutation, useBookingsQuery } from '../../../API/rtkQuery';
 import Sidebar from '../../../Common/SideBar/Sidebar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 
@@ -11,6 +11,8 @@ const Room = () => {
     const [deleteRoom] = useDeleteRoomMutation();
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState("");
+    const [editroom] = useEditroomMutation();
+    const { data: bookingData, error: bookingError } = useBookingsQuery();
 
     useEffect(() => {
         let timer;
@@ -23,7 +25,10 @@ const Room = () => {
     }, [successMessage]);
 
 
-    const filteredRooms = data?.filter((response) =>
+    const filteredRooms = data?.map((response)=> {
+        const bookingsCount = bookingData?.filter((booking) => booking.title === response.title).length;
+        return { ...response, bookingsCount };
+    })?.filter((response) =>
         response.title.toLowerCase().includes(searchRoom.toLowerCase())
     )
     const handleSearch = (event) => {
@@ -40,6 +45,20 @@ const Room = () => {
             window.location.reload();
         })
     }
+    
+    const editStatus = (room, newStatus) => {
+        const updatedRoom = { ...room, status: newStatus };
+        return editroom(updatedRoom);
+      };
+    
+      const handleEditStatus = async (room, newStatus) => {
+        try {
+          await editStatus(room, newStatus);
+          setSuccessMessage("Status updated successfully!");
+        } catch (error) {
+        }
+      };
+
     return (
         <div className='container-fluid'>
             <div className='row'>
@@ -81,8 +100,8 @@ const Room = () => {
                                             {/* <td></td> */}
                                             <td>{room.title}</td>
                                             <td>{room.capacity}</td>
-                                            <td></td>
-                                            <td>{room.status}</td>
+                                            <td><Link to="/bookings">{room.bookingsCount}</Link></td>
+                                            <td contentEditable="true"  onBlur={(e) => handleEditStatus(room, e.target.textContent)}>{room.status}</td>
                                             <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditRoom(room)}></i>
                                                 <i className='fa fa-trash ms-3' style={{ "cursor": "pointer" }} onClick={() => handleDelete(room.id)}></i>
                                             </td>

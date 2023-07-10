@@ -1,4 +1,4 @@
-import { useAddbookingMutation } from "../../../API/rtkQuery";
+import { useAddbookingMutation, useRoomsQuery } from "../../../API/rtkQuery";
 import Sidebar from "../../../Common/SideBar/Sidebar";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,9 @@ const AddBooking = () => {
     const [activeTab, setActiveTab] = useState('booking');
     const [timeSlots, setTimeSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+    const { data: roomData, error: Error } = useRoomsQuery();
+    const [searchRoom, setSearchRoom] = useState('');
+
 
     useEffect(() => {
         let timer;
@@ -38,6 +41,27 @@ const AddBooking = () => {
         return () => clearTimeout(timer);
     }, [successMessage]);
 
+    const filteredRooms = roomData?.filter((response) =>
+        response.title.toLowerCase().includes(searchRoom.toLowerCase())
+    )
+
+    const generateBookforOptions = () => {
+        const selectedRoom = roomData?.find((room) => room.title === title);
+        if (selectedRoom) {
+            return selectedRoom.bookfor.map((option) => (
+                <option key={option} value={option}>{option}</option>
+            ));
+        }
+        return null;
+    };
+
+    const generateStatusOptions = () => {
+        const selectedRoom = roomData?.find((room) => room.title === title);
+        if (selectedRoom && selectedRoom.status) {
+            return <option value={selectedRoom.status}>{selectedRoom.status}</option>;
+          }
+        return null;
+      };
 
     const handleAddBooking = (e) => {
         e.preventDefault();
@@ -67,54 +91,54 @@ const AddBooking = () => {
         const selectedDuration = e.target.value;
         setBookFor(selectedDuration);
         setSelectedTimeSlot('');
-      
+
         const slots = generateTimeSlots(selectedDuration, date);
         setTimeSlots(slots);
-      };
-      
-      const generateTimeSlots = (duration, date) => {
+    };
+
+    const generateTimeSlots = (duration, date) => {
         const timeSlots = [];
         const today = new Date();
         date = today.toISOString().split('T')[0];
-        
+
         if (duration === 'Multipledays') {
-          const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-          const startDate = new Date(date);
-          const numberOfDays = 7;
-      
-          for (let i = 0; i < numberOfDays; i++) {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + i);
-            const weekday = weekdays[currentDate.getDay()];
-            timeSlots.push(weekday);
-          }
+            const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const startDate = new Date(date);
+            const numberOfDays = 7;
+
+            for (let i = 0; i < numberOfDays; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                const weekday = weekdays[currentDate.getDay()];
+                timeSlots.push(weekday);
+            }
         } else if (duration === 'Halfday') {
-          const halfDayTimeRanges = [
-            { label: 'Morning', startTime: '8:00', endTime: '12:00' },
-            { label: 'Afternoon', startTime: '13:00', endTime: '15:00' },
-            { label: 'Evening', startTime: '16:00', endTime: '18:00' }
-          ];
-      
-          halfDayTimeRanges.forEach((timeRange) => {
-            const slot = `${timeRange.label}: ${timeRange.startTime}-${timeRange.endTime}`;
-            timeSlots.push(slot);
-          });
+            const halfDayTimeRanges = [
+                { label: 'Morning', startTime: '8:00', endTime: '12:00' },
+                { label: 'Afternoon', startTime: '13:00', endTime: '15:00' },
+                { label: 'Evening', startTime: '16:00', endTime: '18:00' }
+            ];
+
+            halfDayTimeRanges.forEach((timeRange) => {
+                const slot = `${timeRange.label}: ${timeRange.startTime}-${timeRange.endTime}`;
+                timeSlots.push(slot);
+            });
         } else if (duration === 'Hour') {
-          const startTime = 9;
-          const endTime = 15;
-          const slotDuration = 1;
-      
-          for (let i = startTime; i <= endTime; i += slotDuration) {
-            const startTime = i.toFixed(2);
-            const endTime = (i + slotDuration).toFixed(2);
-            const timeSlot = `${startTime}-${endTime}`;
-            timeSlots.push(timeSlot);
-          }
+            const startTime = 9;
+            const endTime = 15;
+            const slotDuration = 1;
+
+            for (let i = startTime; i <= endTime; i += slotDuration) {
+                const startTime = i.toFixed(2);
+                const endTime = (i + slotDuration).toFixed(2);
+                const timeSlot = `${startTime}-${endTime}`;
+                timeSlots.push(timeSlot);
+            }
         }
-      
+
         return timeSlots;
-      };
-      
+    };
+
 
     return (
         <div className="container-fluid">
@@ -148,9 +172,12 @@ const AddBooking = () => {
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={title} onChange={(e) => setTitle(e.target.value)}>
                                             <option value="">Select a Room</option>
-                                            <option value="SmallConferenceRoom">SmallConferenceRoom</option>
-                                            <option value="LargeConferenceroom">LargeConferenceRoom</option>
-                                            <option value="PanoramicRoom">PanoramicRoom</option>
+                                            {filteredRooms?.map((room) => (
+                                                <>
+                                                    <option value={room.title}>{room.title}</option>
+                                                </>
+
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="col-2 mb-4">
@@ -171,9 +198,7 @@ const AddBooking = () => {
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={bookfor} onChange={handleDurationSelect}>
                                             <option value="">Select Option</option>
-                                            <option value="Multipledays">Multipledays</option>
-                                            <option value="Halfday">Halfday</option>
-                                            <option value="Hour">Hour</option>
+                                            {generateBookforOptions()}
                                         </select>
                                     </div>
                                     {bookfor && (
@@ -182,14 +207,14 @@ const AddBooking = () => {
                                                 <label className="fs-5">Time Slot</label>
                                             </div>
                                             <div className="col-10 mb-4">
-                                            {timeSlots?.map((slot) => (
-                                                <button key={slot}
-                                                 value={slot} onClick={() => setSelectedTimeSlot(slot)} className={`ms-3 me-3 mt-3 btn btn-light shadow p-3 time-slot ${selectedTimeSlot === slot ? 'selected' : ''}`}>
+                                                {timeSlots?.map((slot) => (
+                                                    <button key={slot}
+                                                        value={slot} onClick={() => setSelectedTimeSlot(slot)} className={`ms-3 me-3 mt-3 btn btn-light shadow p-3 time-slot ${selectedTimeSlot === slot ? 'selected' : ''}`}>
                                                         {slot}
-                                                    
-                                                </button>
 
-                                            ))}
+                                                    </button>
+
+                                                ))}
                                             </div>
                                         </>
                                     )}
@@ -207,11 +232,15 @@ const AddBooking = () => {
                                     </div>
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={status} onChange={(e) => setStatus(e.target.value)}>
-                                            <option value="">Select status</option>
-                                            <option value="All">All</option>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Confirmed">Confirmed</option>
-                                            <option value="Cancelled">Cancelled</option>
+                                            {/* <option value="">Select status</option>
+                                            {filteredRooms?.map((room) => (
+                                                <>
+                                                    <option value={room.status}>{room.status}</option>
+                                                </>
+
+                                            ))} */}
+                                             <option value="">Select Option</option>
+                                            {generateStatusOptions()}
                                         </select>
                                     </div>
                                     <div className="col-2 mb-4">
