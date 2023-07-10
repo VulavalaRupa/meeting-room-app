@@ -98,7 +98,7 @@ const Users = ()  => {
                         {filteredUsers?.length === 0 ? (
                             <div>No data found.</div>
                         ) : (
-                            <table className="table table-striped border">
+                            <table className="table table-striped border text-center">
                                 <thead>
                                     <tr>
                                         {/* <th scope="col">Image</th> */}

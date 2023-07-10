@@ -232,13 +232,6 @@ const AddBooking = () => {
                                     </div>
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={status} onChange={(e) => setStatus(e.target.value)}>
-                                            {/* <option value="">Select status</option>
-                                            {filteredRooms?.map((room) => (
-                                                <>
-                                                    <option value={room.status}>{room.status}</option>
-                                                </>
-
-                                            ))} */}
                                              <option value="">Select Option</option>
                                             {generateStatusOptions()}
                                         </select>

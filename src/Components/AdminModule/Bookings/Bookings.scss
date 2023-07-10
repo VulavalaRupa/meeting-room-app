@@ -5,10 +5,13 @@ button.rounded.active {
 
   .confirmed{
     color: green !important;
+    font-weight: bold !important;
   }
   .pending{
     color: orange !important;
+    font-weight: bold !important;
   }
   .cancelled{
     color: red !important;
+    font-weight: bold !important;
   }

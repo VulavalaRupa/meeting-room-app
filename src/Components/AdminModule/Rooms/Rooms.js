@@ -13,6 +13,8 @@ const Room = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [editroom] = useEditroomMutation();
     const { data: bookingData, error: bookingError } = useBookingsQuery();
+    const [selectedStatus, setSelectedStatus] = useState('All');
+    let  filteredRooms;
 
     useEffect(() => {
         let timer;
@@ -24,8 +26,7 @@ const Room = () => {
         return () => clearTimeout(timer);
     }, [successMessage]);
 
-
-    const filteredRooms = data?.map((response)=> {
+     filteredRooms = data?.map((response)=> {
         const bookingsCount = bookingData?.filter((booking) => booking.title === response.title).length;
         return { ...response, bookingsCount };
     })?.filter((response) =>
@@ -34,6 +35,14 @@ const Room = () => {
     const handleSearch = (event) => {
         setSearchRoom(event.target.value);
     };
+
+    const handleStatusChange = (status) => {
+        setSelectedStatus(status);
+    };
+    // Filter based on Status
+    if (selectedStatus !== 'All') {
+        filteredRooms = filteredRooms.filter((room) => room.status === selectedStatus);
+    }
 
     const navigateToEditRoom = (room) => {
         navigate(`/rooms/editroom/${room.id}`, { state: { room } })
@@ -77,16 +86,36 @@ const Room = () => {
                             placeholder="Search"
                         />
                     </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button
+                            type="button"
+                            className={`rounded btn-lg p-2 ${selectedStatus === 'All' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange('All')}> All
+                        </button>
+                        <button
+                            type="button"
+                            className={`rounded ${selectedStatus === 'Active' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange('Active')}>
+                            Active
+                        </button>
+                        <button
+                            type="button"
+                            className={`rounded ${selectedStatus === 'InActive' ? 'active' : ''}`}
+                            onClick={() => handleStatusChange('InActive')}>
+                                InActive
+                        </button>
+                       
+                    </div>
                     {/* Display data in Table */}
 
                     <div className='card shadow bg-body rounded mt-5 p-3'>
                         {filteredRooms?.length === 0 ? (
                             <div>No data found.</div>
                         ) : (
-                            <table className="table table-striped border">
+                            <table className="table table-striped border text-center">
                                 <thead>
                                     <tr>
-                                        {/* <th scope="col">Image</th> */}
+                                        <th scope="col">Image</th>
                                         <th scope="col">Room</th>
                                         <th scope="col">Capacity</th>
                                         <th scope="col">Bokings</th>
@@ -97,10 +126,10 @@ const Room = () => {
                                 <tbody>
                                     {filteredRooms?.map((room) => (
                                         <tr>
-                                            {/* <td></td> */}
+                                            <td><img src={room.image} width={"100px"}/></td>
                                             <td>{room.title}</td>
                                             <td>{room.capacity}</td>
-                                            <td><Link to="/bookings">{room.bookingsCount}</Link></td>
+                                            <td><Link to="/bookings" style={{textDecoration:"none"}}>{room.bookingsCount}</Link></td>
                                             <td contentEditable="true"  onBlur={(e) => handleEditStatus(room, e.target.textContent)}>{room.status}</td>
                                             <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditRoom(room)}></i>
                                                 <i className='fa fa-trash ms-3' style={{ "cursor": "pointer" }} onClick={() => handleDelete(room.id)}></i>

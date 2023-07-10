@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEditbookingMutation } from "../../../API/rtkQuery";
+import { useEditbookingMutation, useRoomsQuery } from "../../../API/rtkQuery";
 import { useState, useEffect } from "react";
 import Sidebar from "../../../Common/SideBar/Sidebar";
 
@@ -26,6 +26,10 @@ const EditBooking = () => {
     const [editbooking, { isLoading }] = useEditbookingMutation();
     const [successMessage, setSuccessMessage] = useState("");
     const [activeTab, setActiveTab] = useState('booking');
+    const [timeSlots, setTimeSlots] = useState([]);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+    const { data: roomData, error: Error } = useRoomsQuery();
+    const [searchRoom, setSearchRoom] = useState('');
 
     useEffect(() => {
         let timer;
@@ -37,14 +41,17 @@ const EditBooking = () => {
         return () => clearTimeout(timer);
     }, [successMessage]);
 
+    const filteredRooms = roomData?.filter((response) =>
+        response.title.toLowerCase().includes(searchRoom.toLowerCase())
+    )
 
     // Function to update the fields
     const handleEditForm = (e) => {
         e.preventDefault();
         const updatedBooking = {
             ...booking, title: title,
-             date, capacity, total, 
-             bookfor: bookfor, priceperday, status,
+            date, capacity, total,
+            bookfor: bookfor, priceperday, status,
             users: [{ name, phone, email, address, company, city, state, country, zip }]
         };
         editbooking(updatedBooking).unwrap().then((response) => {
@@ -56,6 +63,7 @@ const EditBooking = () => {
     const handleTabChange = (tab) => {
         setActiveTab(tab);
     };
+
 
     return (
         <div className="container-fluid">
@@ -88,10 +96,13 @@ const EditBooking = () => {
                                     </div>
                                     <div className="col-10 mb-4">
                                         <select className="form-control form-control-lg" value={title} onChange={(e) => setTitle(e.target.value)}>
-                                            <option value="">Select a Room</option>
-                                            <option value="SmallConferenceRoom">SmallConferenceRoom</option>
-                                            <option value="LargeConferenceRoom">LargeConferenceRoom</option>
-                                            <option value="PanoramicRoom">PanoramicRoom</option>
+                                        <option value="">Select a Room</option>
+                                            {filteredRooms?.map((room) => (
+                                                <>
+                                                    <option value={room.title}>{room.title}</option>
+                                                </>
+
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="col-2 mb-4">
@@ -183,8 +194,8 @@ const EditBooking = () => {
                                             <label className="fs-5 mb-3">City</label>
                                             <input className="form-control form-control-lg" type="text" value={city} onChange={(e) => setCity(e.target.value)}></input>
                                         </div>
-                                        </div>
-                                        <div className="row mt-5">
+                                    </div>
+                                    <div className="row mt-5">
                                         <div className="col-4">
                                             <label className="fs-5 mb-3">State</label>
                                             <input className="form-control form-control-lg" type="text" value={state} onChange={(e) => setState(e.target.value)}></input>
@@ -197,7 +208,7 @@ const EditBooking = () => {
                                             <label className="fs-5 mb-3">Country</label>
                                             <input className="form-control form-control-lg" type="text" value={country} onChange={(e) => setCountry(e.target.value)}></input>
                                         </div>
-                                       
+
                                         <div className="col-2 "></div>
                                         <div className="col-10 mt-5 d-grid gap-2 d-md-flex justify-content-md-end">
                                             <button type="button" className="btn btn-primary btn-lg" onClick={handleEditForm}>Update</button>
