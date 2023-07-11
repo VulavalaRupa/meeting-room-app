@@ -89,7 +89,8 @@ export const meetingRoomApi = createApi({
     })
 })
 
-export const { useLoginQuery, useSignupMutation, useRoomsQuery,
+
+export const { useLazyLoginQuery, useSignupMutation, useRoomsQuery,
     useAddroomsMutation, useEditroomMutation, useDeleteRoomMutation,
     useBookingsQuery, useAddbookingMutation, useEditbookingMutation, useDeleteBookingMutation,
     useGetusersQuery, useAddusersMutation, useEdituserMutation, useDeleteUserMutation,

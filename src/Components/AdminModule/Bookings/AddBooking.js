@@ -22,12 +22,12 @@ const AddBooking = () => {
     const [state, setState] = useState('');
     const [zip, setZip] = useState('');
     const [country, setCountry] = useState('');
-    const [addbooking, error, isLoading] = useAddbookingMutation()
+    const [addbooking] = useAddbookingMutation()
     const [successMessage, setSuccessMessage] = useState("");
     const [activeTab, setActiveTab] = useState('booking');
     const [timeSlots, setTimeSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
-    const { data: roomData, error: Error } = useRoomsQuery();
+    const { data: roomData } = useRoomsQuery();
     const [searchRoom, setSearchRoom] = useState('');
 
 
@@ -96,14 +96,14 @@ const AddBooking = () => {
         setTimeSlots(slots);
     };
 
-    const generateTimeSlots = (duration, date) => {
+    const generateTimeSlots = (duration, todayDate) => {
         const timeSlots = [];
         const today = new Date();
-        date = today.toISOString().split('T')[0];
+        const updatedTodayDate = todayDate || today.toISOString().split('T')[0];
 
         if (duration === 'Multipledays') {
             const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const startDate = new Date(date);
+            const startDate = new Date(updatedTodayDate);
             const numberOfDays = 7;
 
             for (let i = 0; i < numberOfDays; i++) {

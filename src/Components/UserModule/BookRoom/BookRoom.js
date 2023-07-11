@@ -75,14 +75,14 @@ const BookRoom = () => {
         setTimeSlots(slots);
     };
 
-    const generateTimeSlots = (duration, date) => {
+    const generateTimeSlots = (duration, todayDate) => {
         const timeSlots = [];
         const today = new Date();
-        date = today.toISOString().split('T')[0];
+        const updatedTodayDate = todayDate || today.toISOString().split('T')[0];
 
         if (duration === 'Multipledays') {
             const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const startDate = new Date(date);
+            const startDate = new Date(updatedTodayDate);
             const numberOfDays = 7;
 
             for (let i = 0; i < numberOfDays; i++) {
