@@ -75,7 +75,7 @@ const Room = () => {
                     <Sidebar />
                 </div>
                 <div className='col-auto col-md-9 col-xl-10 '>
-                    {successMessage && <div className="mt-3 alert alert-danger">{successMessage}</div>}
+                    {successMessage && <div className="mt-3 alert alert-success">{successMessage}</div>}
                     <div className='fs-2 ms-3'>List of Meeting Rooms</div>
                     <div className='d-flex flex-row p-2 mt-5'>
                         <button type="button" className='btn btn-primary' onClick={() => navigate("/rooms/addroom")}><i className='fa fa-plus'></i>  Add Room</button>
@@ -129,7 +129,7 @@ const Room = () => {
                                             <td><img src={room.image} width={"100px"}/></td>
                                             <td>{room.title}</td>
                                             <td>{room.capacity}</td>
-                                            <td><Link to="/bookings" style={{textDecoration:"none"}}>{room.bookingsCount}</Link></td>
+                                            <td><Link to="/bookings" style={{textDecoration:"none", fontWeight:"bold"}}>{room.bookingsCount}</Link></td>
                                             <td contentEditable="true"  onBlur={(e) => handleEditStatus(room, e.target.textContent)}>{room.status}</td>
                                             <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditRoom(room)}></i>
                                                 <i className='fa fa-trash ms-3' style={{ "cursor": "pointer" }} onClick={() => handleDelete(room.id)}></i>

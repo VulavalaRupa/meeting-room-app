@@ -49,7 +49,7 @@ export const meetingRoomApi = createApi({
         }),
         editbooking: builder.mutation({
             query: (booking) => ({
-                url: `/rooms/${booking.id}`,
+                url: `/bookings/${booking.id}`,
                 method: 'PUT',
                 body: booking
             })

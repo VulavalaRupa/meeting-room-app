@@ -23,6 +23,7 @@ const LoginForm = () => {
         if (successMessage) {
             timer = setTimeout(() => {
                 setSuccessMessage("");
+                setErrorMessage("");
             }, 1000);
         }
         return () => clearTimeout(timer);
@@ -92,4 +93,4 @@ const LoginForm = () => {
 
 }
 
-export default LoginForm
+export default LoginForm;

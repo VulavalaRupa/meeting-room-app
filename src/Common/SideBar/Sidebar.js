@@ -5,7 +5,8 @@ const Sidebar = () => {
   return (
    
         <div className="px-sm-2 px-0 bg-dark">
-            <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-5 text-white min-vh-100">
+            <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                <h3 className='mb-5'>Meeting Room</h3>
                 <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                 <li className="nav-item">
                         <Link to="/admin-dashboard" className="nav-link align-middle px-0 text-white text-decoration-none fs-5">

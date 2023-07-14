@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useBookingsQuery, useDeleteBookingMutation, useRoomsQuery } from '../../../API/rtkQuery';
+import { useBookingsQuery, useDeleteBookingMutation, useEditbookingMutation, useRoomsQuery } from '../../../API/rtkQuery';
 import Sidebar from '../../../Common/SideBar/Sidebar';
 import { useNavigate } from 'react-router-dom';
 import "./Bookings.scss";
@@ -10,7 +10,10 @@ const Bookings = () => {
     const [selectedStatus, setSelectedStatus] = useState('All');
     const navigate = useNavigate();
     const [deleteBooking] = useDeleteBookingMutation();
+    const [editbooking] = useEditbookingMutation();
     const [successMessage, setSuccessMessage] = useState("");
+    const [editedStatus, setEditedStatus] = useState('');
+    
 
     useEffect(() => {
         let timer;
@@ -38,9 +41,13 @@ const Bookings = () => {
         filteredBookings = filteredBookings.filter((booking) => booking.status === selectedStatus);
     }
     // Filtering using search field
-    filteredBookings = filteredBookings?.filter((response) =>
-        response.title.toLowerCase().includes(searchBooking.toLowerCase())
+    filteredBookings = filteredBookings?.filter((response) =>{
+    const lowerCaseSearch = searchBooking.toLocaleLowerCase();
+    return(
+        response.title.toLowerCase().includes(lowerCaseSearch) ||
+        response.users[0].name.toLowerCase().includes(lowerCaseSearch)
     )
+})
 
     const navigateToEditBooking = (booking) => {
         navigate(`/bookings/editbooking/${booking.id}`, { state: { booking } })
@@ -53,6 +60,19 @@ const Bookings = () => {
         })
     }
 
+    const editStatus = (booking, newStatus) => {
+        const updatedBooking = { ...booking, status: newStatus };
+        return editbooking(updatedBooking);
+      };
+    
+      const handleEditStatus = async (booking, newStatus) => {
+        try {
+          await editStatus(booking, newStatus);
+          setSuccessMessage("Status updated successfully!");
+        } catch (error) {
+        }
+      };
+
     return (
         <div className='container-fluid'>
             <div className='row'>
@@ -60,7 +80,7 @@ const Bookings = () => {
                     <Sidebar />
                 </div>
                 <div className='col-auto col-md-9 col-xl-10 '>
-                    {successMessage && <div className="mt-3 alert alert-danger">{successMessage}</div>}
+                    {successMessage && <div className="mt-3 alert alert-success">{successMessage}</div>}
                     <div className='fs-2 ms-3'>List of Bookings</div>
                     <div className='d-flex flex-row p-2 mt-5'>
                         <button type="button" className='btn btn-primary' onClick={() => navigate("/bookings/addBooking")}><i className='fa fa-plus'></i>  Add Booking</button>
@@ -119,7 +139,7 @@ const Bookings = () => {
                                 <tbody>
                                     {filteredBookings?.map((booking) => (
                                         <tr key={booking.id}>
-
+                                             {/* <td><img src={booking.image} width={"100px"}/></td> */}
                                             <td>{booking.title}</td>
                                             <td>{booking.date}</td>
                                             <td>
@@ -128,7 +148,8 @@ const Bookings = () => {
                                                 ))}
                                             </td>
                                             <td>{booking.total}</td>
-                                            <td className={booking.status === 'Confirmed' ? 'confirmed' : booking.status === 'Pending' ? 'pending' : booking.status === 'Cancelled' ? 'cancelled' : ''}>
+                                            <td contentEditable="true"  onBlur={(e) => handleEditStatus(booking, e.target.textContent)}
+                                            className={booking.status === 'Confirmed' ? 'confirmed' : booking.status === 'Pending' ? 'pending' : booking.status === 'Cancelled' ? 'cancelled' : ''}>
                                                 {booking.status}</td>
                                                 <td><i className='fa fa-edit ms-2' style={{ "cursor": "pointer" }} onClick={() => navigateToEditBooking(booking)}></i>
                                                     <i className='fa fa-trash ms-3' style={{ "cursor": "pointer" }} onClick={() => handleDelete(booking.id)}></i>

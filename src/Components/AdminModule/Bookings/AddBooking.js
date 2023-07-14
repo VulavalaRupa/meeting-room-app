@@ -26,7 +26,7 @@ const AddBooking = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [activeTab, setActiveTab] = useState('booking');
     const [timeSlots, setTimeSlots] = useState([]);
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState([]);
     const { data: roomData } = useRoomsQuery();
     const [searchRoom, setSearchRoom] = useState('');
 
@@ -48,20 +48,12 @@ const AddBooking = () => {
     const generateBookforOptions = () => {
         const selectedRoom = roomData?.find((room) => room.title === title);
         if (selectedRoom) {
-            return selectedRoom.bookfor.map((option) => (
+            return selectedRoom.bookfor?.map((option) => (
                 <option key={option} value={option}>{option}</option>
             ));
         }
         return null;
     };
-
-    const generateStatusOptions = () => {
-        const selectedRoom = roomData?.find((room) => room.title === title);
-        if (selectedRoom && selectedRoom.status) {
-            return <option value={selectedRoom.status}>{selectedRoom.status}</option>;
-          }
-        return null;
-      };
 
     const handleAddBooking = (e) => {
         e.preventDefault();
@@ -90,11 +82,20 @@ const AddBooking = () => {
     const handleDurationSelect = (e) => {
         const selectedDuration = e.target.value;
         setBookFor(selectedDuration);
-        setSelectedTimeSlot('');
+        setSelectedTimeSlot([]);
 
         const slots = generateTimeSlots(selectedDuration, date);
         setTimeSlots(slots);
     };
+    const handleTimeSlotSelect = (slot) => {
+        if (selectedTimeSlot.includes(slot)) {
+          setSelectedTimeSlot((prevSelectedSlots) =>
+            prevSelectedSlots.filter((selectedSlot) => selectedSlot !== slot)
+          );
+        } else {
+          setSelectedTimeSlot((prevSelectedSlots) => [...prevSelectedSlots, slot]);
+        }
+      };
 
     const generateTimeSlots = (duration, todayDate) => {
         const timeSlots = [];
@@ -207,14 +208,14 @@ const AddBooking = () => {
                                                 <label className="fs-5">Time Slot</label>
                                             </div>
                                             <div className="col-10 mb-4">
-                                                {timeSlots?.map((slot) => (
-                                                    <button key={slot}
-                                                        value={slot} onClick={() => setSelectedTimeSlot(slot)} className={`ms-3 me-3 mt-3 btn btn-light shadow p-3 time-slot ${selectedTimeSlot === slot ? 'selected' : ''}`}>
-                                                        {slot}
+                                            {timeSlots?.map((slot) => (
+                                                <button key={slot}  onClick={() => handleTimeSlotSelect(slot)}
+                                                    value={slot} className={`ms-3 me-3 mt-3 btn btn-light  p-3 time-slot ${selectedTimeSlot.includes(slot) ?  'selected' : ''}`}>
+                                                    {slot}
 
-                                                    </button>
+                                                </button>
 
-                                                ))}
+                                            ))}
                                             </div>
                                         </>
                                     )}
@@ -231,10 +232,7 @@ const AddBooking = () => {
                                         <label className="fs-5">Status</label>
                                     </div>
                                     <div className="col-10 mb-4">
-                                        <select className="form-control form-control-lg" value={status} onChange={(e) => setStatus(e.target.value)}>
-                                             <option value="">Select Option</option>
-                                            {generateStatusOptions()}
-                                        </select>
+                                    <input className="form-control form-control-lg" type="text" value={status} onChange={(e) => setStatus(e.target.value)} />
                                     </div>
                                     <div className="col-2 mb-4">
                                         <label className="fs-5">Total</label>

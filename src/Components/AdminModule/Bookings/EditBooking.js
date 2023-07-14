@@ -140,13 +140,14 @@ const EditBooking = () => {
                                         <label className="fs-5">Status</label>
                                     </div>
                                     <div className="col-10 mb-4">
-                                        <select className="form-control form-control-lg" value={status} onChange={(e) => setStatus(e.target.value)}>
+                                    <input className="form-control form-control-lg" type="text" value={status} onChange={(e) => setStatus(e.target.value)} />
+                                        {/* <select className="form-control form-control-lg" value={status} onChange={(e) => setStatus(e.target.value)}>
                                             <option value="">Select status</option>
                                             <option value="All">All</option>
                                             <option value="Pending">Pending</option>
                                             <option value="Confirmed">Confirmed</option>
                                             <option value="Cancelled">Cancelled</option>
-                                        </select>
+                                        </select> */}
                                     </div>
                                     <div className="col-2 mb-4">
                                         <label className="fs-5">Total</label>

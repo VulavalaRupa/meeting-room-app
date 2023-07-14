@@ -28,7 +28,7 @@ const BookRoom = () => {
     const [addbooking, error, isLoading] = useAddbookingMutation()
     const [step, setStep] = useState(1);
     const [successMessage, setSuccessMessage] = useState("");
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState([]);
 
     useEffect(() => {
         let timer;
@@ -54,11 +54,12 @@ const BookRoom = () => {
             users: [{ name, phone, email, address, company, city, state, country, zip }]
 
         };
-        addbooking(newBooking).unwrap().then((res) => {
-            setSuccessMessage("Booking added successfully!");
-            navigate("/user-dashboard")
-            window.location.reload();
-        })
+        localStorage.setItem("BookingData", JSON.stringify(newBooking))
+        navigate("/book/conformation")
+        // addbooking(newBooking).unwrap().then((res) => {
+        //     setSuccessMessage("Booking added successfully!");
+        //     window.location.reload();
+        // })
     }
     const handleNextClick = () => {
         if (step === 1) {
@@ -69,12 +70,20 @@ const BookRoom = () => {
     const handleDurationSelect = (e) => {
         const selectedDuration = e.target.value;
         setBookFor(selectedDuration);
-        setSelectedTimeSlot('');
+        setSelectedTimeSlot([]);
 
         const slots = generateTimeSlots(selectedDuration, date);
         setTimeSlots(slots);
     };
-
+    const handleTimeSlotSelect = (slot) => {
+        if (selectedTimeSlot.includes(slot)) {
+          setSelectedTimeSlot((prevSelectedSlots) =>
+            prevSelectedSlots.filter((selectedSlot) => selectedSlot !== slot)
+          );
+        } else {
+          setSelectedTimeSlot((prevSelectedSlots) => [...prevSelectedSlots, slot]);
+        }
+      };
     const generateTimeSlots = (duration, todayDate) => {
         const timeSlots = [];
         const today = new Date();
@@ -171,8 +180,8 @@ const BookRoom = () => {
                                         </div>
                                         <div className="col-10 mb-4">
                                             {timeSlots?.map((slot) => (
-                                                <button key={slot}
-                                                    value={slot} onClick={() => setSelectedTimeSlot(slot)} className={`ms-3 me-3 mt-3 btn btn-light  p-3 time-slot ${selectedTimeSlot === slot ? 'selected' : ''}`}>
+                                                <button key={slot}  onClick={() => handleTimeSlotSelect(slot)}
+                                                    value={slot} className={`ms-3 me-3 mt-3 btn btn-light  p-3 time-slot ${selectedTimeSlot.includes(slot) ?  'selected' : ''}`}>
                                                     {slot}
 
                                                 </button>
@@ -257,7 +266,7 @@ const BookRoom = () => {
                             </div>
                             <div className="col-2 "></div>
                             <div className="col-10 mt-3 d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" className="btn btn-primary btn-lg" onClick={handleAddBooking}>Save</button>
+                                <button type="button" className="btn btn-primary btn-lg" onClick={handleAddBooking}>Preview Booking</button>
                                 <button type="button" className="btn btn-dark btn-lg" onClick={() => navigate("/user-dashboard")}>Cancel</button>
                             </div>
                         </div>
